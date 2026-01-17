@@ -31,5 +31,8 @@ class Turno(Base):
 
     mesa = relationship("Mesa", backref="turnos")
     consumos = relationship("Consumo", back_populates="turno")
+
+    #relaciones entre tabla de users
     atendido_por_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    cobrado_por_id = Column(Integer, ForeignKey("users.id"), nullable=True)
 

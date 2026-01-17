@@ -9,7 +9,8 @@ class ReporteConsumo(BaseModel):
 
 class ReporteTurno(BaseModel):
     mesa: str
-    atendido_por: str | None = None  # 👈 NUEVO
+    atendido_por: str | None = None
+    facturado_por: str | None = None
     hora_inicio: datetime
     hora_fin: datetime
     tiempo_total_min: int

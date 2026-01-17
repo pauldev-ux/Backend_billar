@@ -165,7 +165,12 @@ def preview(turno_id: int, db: Session = Depends(get_db)):
 # CERRAR TURNO
 # =======================
 @router.patch("/{turno_id}/cerrar", response_model=TurnoOut)
-def cerrar_turno(turno_id: int, data: CerrarTurno, db: Session = Depends(get_db)):
+def cerrar_turno(
+    turno_id: int,
+    data: CerrarTurno,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),  # ✅ NUEVO
+):
     turno = db.query(Turno).filter(Turno.id == turno_id, Turno.estado == "abierto").first()
     if not turno:
         raise HTTPException(404, "Turno no encontrado o ya cerrado")
@@ -190,6 +195,9 @@ def cerrar_turno(turno_id: int, data: CerrarTurno, db: Session = Depends(get_db)
     turno.total_final = subtotal + turno.subtotal_productos + turno.servicios_extras - turno.descuento
     turno.estado = "cerrado"
 
+    # ✅ NUEVO: guardamos quién cerró/cobró
+    turno.cobrado_por_id = current_user.id
+
     mesa = db.query(Mesa).filter(Mesa.id == turno.mesa_id).first()
     mesa.estado = "libre"
     mesa.hora_inicio = None
@@ -198,6 +206,7 @@ def cerrar_turno(turno_id: int, data: CerrarTurno, db: Session = Depends(get_db)
     db.refresh(turno)
 
     return turno_to_dict(turno)
+
 
 
 
