@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import auth, mesas, productos, consumos, reportes, users, turnos, arqueo, categorias
+from app.routers import auth, mesas, productos, consumos, reportes, users, turnos, arqueo, categorias, gastos
 from app.database import Base, engine
 
 from fastapi.staticfiles import StaticFiles
@@ -47,3 +47,4 @@ app.include_router(users.router)
 app.include_router(turnos.router)
 app.include_router(arqueo.router)
 app.include_router(categorias.router)
+app.include_router(gastos.router)
