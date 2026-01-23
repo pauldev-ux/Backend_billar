@@ -65,24 +65,33 @@ def create_mesa_con_imagen(
     return mesa
 
 
+
 @router.get("/", response_model=list[MesaOut])
 def listar_mesas(db: Session = Depends(get_db)):
     mesas = db.query(Mesa).all()
     resultado = []
 
     for mesa in mesas:
-        turno_activo = db.query(Turno)\
-            .filter(Turno.mesa_id == mesa.id, Turno.estado == "abierto")\
-            .first()
+        turno_activo = db.query(Turno).filter(
+            Turno.mesa_id == mesa.id,
+            Turno.estado.in_(["abierto", "pausado"])
+        ).order_by(Turno.id.desc()).first()
 
         resultado.append({
             "id": mesa.id,
             "nombre": mesa.nombre,
             "estado": mesa.estado,
             "tarifa_por_hora": mesa.tarifa_por_hora,
+
             "hora_inicio": turno_activo.hora_inicio if turno_activo else None,
             "turno_activo": turno_activo.id if turno_activo else None,
-            "imagen": mesa.imagen,  # ✅ NUEVO
+            "turno_estado": turno_activo.estado if turno_activo else None,
+
+            # ✅ CLAVE para que el timer NO corra al recargar
+            "pausa_inicio": turno_activo.pausa_inicio if turno_activo else None,
+            "pausa_acumulada_seg": int(turno_activo.pausa_acumulada_seg or 0) if turno_activo else 0,
+
+            "imagen": mesa.imagen,
         })
 
     return resultado

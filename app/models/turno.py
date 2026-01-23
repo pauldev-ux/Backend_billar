@@ -29,6 +29,9 @@ class Turno(Base):
     total_final = Column(Float, default=0)
     estado = Column(String, default="abierto")
 
+    pausa_inicio = Column(DateTime, nullable=True)  # cuándo se pausó (si está pausado)
+    pausa_acumulada_seg = Column(Integer, default=0)  # segundos acumulados de pausa
+
     mesa = relationship("Mesa", backref="turnos")
     consumos = relationship("Consumo", back_populates="turno")
 

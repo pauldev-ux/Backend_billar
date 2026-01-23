@@ -22,9 +22,17 @@ class MesaOut(BaseModel):
     nombre: str
     tarifa_por_hora: float
     estado: str
+
     hora_inicio: datetime | None = None
     turno_activo: int | None = None
+    turno_estado: str | None = None
+
+    # ✅ NUEVOS (para pausa / cronómetro)
+    pausa_inicio: datetime | None = None
+    pausa_acumulada_seg: int = 0
+
     imagen: str | None = None
 
     class Config:
         from_attributes = True
+

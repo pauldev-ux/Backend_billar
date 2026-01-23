@@ -49,6 +49,9 @@ class TurnoOut(BaseModel):
     total_final: float
     estado: str
 
+    pausa_inicio: datetime | None = None
+    pausa_acumulada_seg: int = 0
+
     consumos: List[ConsumoDetalle] = []
 
     class Config:
